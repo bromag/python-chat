@@ -21,13 +21,13 @@ class Server:
             client_name = client_socket.recv(1024).decode('utf-8').strip()
             client = {'socket': client_socket, 'name': client_name}
 
-            # FIX: call the correct broadcast method name
+            # call the correct broadcast method name
             self.broadcast_message(f"{client_name} has joined the chat.\n", client_socket)
             
-            # FIX: use 'clients' (lowercase) like in the class attribute
+            # use 'clients' (lowercase) like in the class attribute
             self.clients.append(client)
             
-            # FIX: call the correct handler function name
+            # call the correct handler function name
             Thread(target=self.handle_new_client, args=(client,), daemon=True).start()
 
     def handle_new_client(self, client):
@@ -45,14 +45,14 @@ class Server:
             else:
                 self.broadcast_message(f"{client_name}: {client_message}", client_socket)
 
-    # FIX: this must be a *method* of the class, not nested in the function
+    # this must be a *method* of the class, not nested in the function
     def broadcast_message(self, message, sender_socket):
         for client in self.clients:
             client_socket = client['socket']
             if client_socket != sender_socket:
                 client_socket.send(message.encode('utf-8'))
 
-    # FIX: this is missing in your paste but needed because you call remove_client()
+    # this is missing in your paste but needed because you call remove_client()
     def remove_client(self, client):
         client_socket = client['socket']
         client_name = client['name']
@@ -69,8 +69,8 @@ class Server:
             pass
 
 
-# FIX: this must be at top level, not inside a method
+# this must be at top level, not inside a method
 if __name__ == "__main__":
     server = Server('127.0.0.1', 6321)
-    # FIX: call start(), not listen()
+    # call start(), not listen()
     server.start()
