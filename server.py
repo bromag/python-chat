@@ -70,7 +70,8 @@ class Server:
 
 
 # this must be at top level, not inside a method
+# start the server
 if __name__ == "__main__":
     server = Server('127.0.0.1', 6321)
-    # call start(), not listen()
+    # call start()
     server.start()
