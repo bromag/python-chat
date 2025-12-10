@@ -30,6 +30,7 @@ class Server:
             # call the correct handler function name
             Thread(target=self.handle_new_client, args=(client,), daemon=True).start()
 
+    # Handle communication with a connected client
     def handle_new_client(self, client):
         client_socket = client['socket']
         client_name = client['name']
