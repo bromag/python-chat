@@ -13,6 +13,12 @@ class Server:
     default_room = "lobby"
 
     def __init__(self, host, port):
+
+        #Speichert den Servername, Host und Port, damit man drauf zugreifen kann
+        self.host = host
+        self.port = port
+        self.server_name = "ChatServer" # <-- Neuer Servername
+
         # TCP/IPv4 Socket erstellen
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -26,7 +32,7 @@ class Server:
         self.server_socket.listen(5)
 
         # Statusausgabe
-        print(f"Server started on {host}:{port}")
+        print(f"{self.server_name} started on {host}:{port}")
 
     def start(self):
         # Hauptloop: akzeptiert laufend neue Verbindungen
@@ -108,6 +114,18 @@ class Server:
                 self.send_to(
                     client,
                     f"users in '{room}' ({len(users)}): " + ", ".join(users) + "\n"
+                )
+                continue
+
+            # Command: Zeigt Servername mit IP und Port an
+            if msg == "/server":
+                # Anzahl der verbundenen Clients
+                client_count = len(self.clients)
+
+                # Nachricht an den Client
+                self.send_to(
+                    client,
+                    f"{self.server_name} running on {self.host}:{self.port} | {client_count} user(s) online\n"
                 )
                 continue
 
