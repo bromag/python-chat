@@ -99,7 +99,7 @@ class Server:
                 # Raumwechsel durchführen
                 self.change_room(client, requested)
                 continue
-
+            # Command: Kann user im Chatraum anzeigen
             if msg == "/users":
                 room = client["room"]
                 users = [c["name"]for c in self.clients if c["room"] == room]
