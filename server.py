@@ -82,12 +82,12 @@ class Server:
                 break
 
             # Command: Räume anzeigen
-            if msg == "/rooms":
+            if msg == "/ls":
                 self.send_to(client, "Rooms: lobby, work, support, team\n")
                 continue
 
             # Command: Raum wechseln
-            if msg.startswith("/join "):
+            if msg.startswith("/cd "):
                 # Gewünschter Raumname (alles klein, damit /join Work auch geht)
                 requested = msg.split(" ", 1)[1].strip().lower()
 
