@@ -45,7 +45,7 @@ class Server:
             self.clients.append(client)
 
             # Dem Client erklären, wo er ist und wie er den Chat benutzt
-            self.send_to(client, f"You joined '{self.default_room}'. Use /cd <room>, /ls, /users, bye.\n")
+            self.send_to(client, f"You joined '{self.default_room}' \n")
             self.send_to(client, "Available rooms: lobby, work, support, team\n")
             self.send_to(client, "Commands: /ls (list rooms), /cd <room> (change room), /users (list users in room), bye (exit)\n")
 
