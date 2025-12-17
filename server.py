@@ -53,7 +53,7 @@ class Server:
             # Dem Client erklären, wo er ist und wie er den Chat benutzt
             self.send_to(client, f"You joined '{self.default_room}' \n")
             self.send_to(client, "Available rooms: lobby, work, support, team\n")
-            self.send_to(client, "Commands: /ls (list rooms), /cd <room> (change room), /users (list users in room), bye (exit)\n")
+            self.send_to(client, "Commands: /ls (list rooms), /cd <room> (change room), /users (list users in room), /server (show server info), /help (show all commands), bye (exit)\n")
 
             # Den Raum informieren, dass der Client beigetreten ist
             self.broadcast_room(f"[{client['room']}] {name} joined.\n", client)
@@ -126,6 +126,18 @@ class Server:
                 self.send_to(
                     client,
                     f"{self.server_name} running on {self.host}:{self.port} | {client_count} user(s) online\n"
+                )
+                continue
+
+            # Command: Zeigt alle Befehle an
+            if msg == "/help":
+                self.send_to(client,
+                    "/ls            - list available rooms\n"
+                    "/cd <room>     - change room\n"
+                    "/users         - list users in current room\n"
+                    "/server        - show server info\n"
+                    "/help          - show all commands\n"
+                    "bye            - disconnect\n"
                 )
                 continue
 
