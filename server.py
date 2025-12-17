@@ -100,6 +100,15 @@ class Server:
                 self.change_room(client, requested)
                 continue
 
+            if msg == "/users":
+                room = client["room"]
+                users = [c["name"]for c in self.clients if c["room"] == room]
+                self.send_to(
+                    client,
+                    f"users in '{room}' ({len(users)}): " + ", ".join(users) + "\n"
+                )
+                continue
+
             # Normale Chat-Nachricht: nur an Clients im selben Raum senden
             self.broadcast_room(f"{name}: {msg}\n", client)
 
