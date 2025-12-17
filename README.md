@@ -74,11 +74,12 @@ Innerhalb des Chats stehen folgende Befehle zur Verfügung:
 ```bash
 | Befehl        | Beschreibung                               |
 |---------------|--------------------------------------------|
-| `/rooms`      | Zeigt alle verfügbaren Chat-Räume          |
-| `/join lobby` | Wechsel in den Raum `lobby`                |
-| `/join work`  | Wechsel in den Raum `work`                 |
-| `/join support` | Wechsel in den Raum `support`            |
-| `/join team`  | Wechsel in den Raum `team`                 |
+| `/ls`         | Zeigt alle verfügbaren Chat-Räume          |
+| `/cd lobby`   | Wechsel in den Raum `lobby`                |
+| `/cd work`    | Wechsel in den Raum `work`                 |
+| `/cd support` | Wechsel in den Raum `support`              |
+| `/cd team`    | Wechsel in den Raum `team`                 |
+| `/users`      | Zeigt alle verbundene User                 |
 | `bye`         | Beendet die Verbindung zum Server          |
 ```
 
