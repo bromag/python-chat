@@ -50,4 +50,6 @@ class Client:
 
 # Einstiegspunkt des Clients
 if __name__ == "__main__":
-    Client('127.0.0.1', 6321)
+    host = ('127.0.0.1')
+    port = int(input("Enter server port: ").strip())
+    Client(host, port)

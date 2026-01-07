@@ -28,11 +28,14 @@ class Server:
         # Socket an Host/Port binden
         self.server_socket.bind((host, port))
 
+        # Aktualisiert den Port, falls 0 übergeben wurde
+        self.port = self.server_socket.getsockname()[1]
+
         # Server beginnt zu lauschen (max. 5 wartende Verbindungen im Backlog)
         self.server_socket.listen(5)
 
         # Statusausgabe
-        print(f"{self.server_name} started on {host}:{port}")
+        print(f"{self.server_name} started on {self.host}:{self.port}" )
 
     def start(self):
         # Hauptloop: akzeptiert laufend neue Verbindungen
@@ -217,5 +220,5 @@ class Server:
 
 # Startpunkt des Programms: nur wenn diese Datei direkt ausgeführt wird
 if __name__ == "__main__":
-    # Server auf localhost:6321 starten
-    Server("127.0.0.1", 6321).start()
+    # Server auf starten
+    Server("127.0.0.1", 0).start()
