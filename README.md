@@ -3,6 +3,9 @@
 Dieses Projekt implementiert einen **multi-threaded Chat-Service** in Python auf Basis von TCP-Sockets.  
 Mehrere Clients können sich gleichzeitig mit dem Server verbinden und in **vordefinierten Chat-Räumen** kommunizieren.
 
+Der Server verwendet einen **dynamischen TCP-Port**, welcher beim Start automatisch vom Betriebssystem vergeben wird.  
+Die Verbindungsinformationen werden in einer Datei gespeichert und vom Client automatisch gelesen.
+
 Die Anwendung besteht aus zwei Skripten:
 - `server.py` – Chat-Server
 - `client.py` – Konsolen-Client
@@ -13,6 +16,8 @@ Die Anwendung besteht aus zwei Skripten:
 
 - Multi-threaded Server (ein Thread pro Client)
 - Gleichzeitige Verbindung mehrerer Clients
+- Dynamischer TCP-Port
+- Automatische Weitergabe von Host/Port über Datei
 - Feste Chat-Räume:
   - `lobby` (Standardraum)
   - `work`
@@ -20,7 +25,7 @@ Die Anwendung besteht aus zwei Skripten:
   - `team`
 - Nachrichten werden nur innerhalb des gleichen Raums gesendet
 - Raumwechsel per Befehl
-- Saubere Trennung zwischen Server und Client
+- Saubere Trennung zwischen Server- und Client-Logik
 
 ---
 
@@ -43,7 +48,12 @@ python3 server.py
 
 ## Erwartete Ausgabe 
 ChatServer started on 127.0.0.1:<PORT>
+Address written to server_addr.json
 ```
+
+### Hinweis:
+Der Port wird automatisch vergeben.
+Host und Port werden in der Datei server_addr.json gespeichert.
 ---
 
 ## Client Starten
@@ -55,9 +65,9 @@ ChatServer started on 127.0.0.1:<PORT>
 ```bash
 python3 client.py
 ```
-4. Gib den vom Server ausgegebenen Port ein:
+4. Falls kein Host oder Port als Parameter übergeben wurden, liest der Client diese automatisch aus:
 ```bash
-Enter server port:
+server_addr.json
 ```
 5. Gib anschliessend einen Benutzernamen ein:
 ```bash
@@ -99,6 +109,73 @@ Im Chat bye eingeben
 - Server beenden:
 Im Server-Terminal CTRL + C drücken
 
+# Technische Erklärung des Codes
 
+## server.py – Chat-Server
 
+### Der Server stellt die zentrale Komponente des Systems dar und übernimmt folgende Aufgaben:
+	•	Erstellt einen TCP-Socket und bindet sich an einen dynamischen Port (port = 0)
+	•	Liest den tatsächlich vergebenen Port mit getsockname()
+	•	Speichert Host und Port in einer JSON-Datei (server_addr.json)
+	•	Wartet auf eingehende Client-Verbindungen (accept)
+	•	Erstellt für jeden verbundenen Client einen eigenen Thread
+	•	Verwaltet alle Clients in einer gemeinsamen Liste
+	•	Ordnet jedem Client einen Chat-Raum zu
+	•	Verarbeitet Chat-Befehle (/ls, /cd, /users, /server, /help)
+	•	Verteilt Nachrichten ausschliesslich an Clients im gleichen Raum
+	•	Entfernt Clients sauber bei Verbindungsabbruch oder bei bye
 
+Der Server enthält die gesamte Logik für Räume, Benutzer und Nachrichtenverteilung.
+
+⸻
+
+## client.py – Chat-Client
+
+### Der Client stellt die Benutzeroberfläche im Terminal bereit und übernimmt folgende Aufgaben:
+	•	Liest optionale Startparameter (--host, --port, --addrfile) mittels argparse
+	•	Falls Host oder Port fehlen, werden diese automatisch aus der JSON-Datei gelesen
+	•	Baut eine TCP-Verbindung zum Server auf
+	•	Sendet beim Verbindungsaufbau den Benutzernamen
+	•	Startet einen separaten Thread zum Empfangen von Nachrichten
+	•	Liest Benutzereingaben aus dem Terminal
+	•	Sendet Nachrichten und Befehle an den Server
+	•	Gibt empfangene Nachrichten direkt im Terminal aus
+	•	Beendet die Verbindung sauber bei Eingabe von bye
+
+Der Client enthält keine Geschäftslogik für Räume oder Benutzer – diese liegt vollständig beim Server.
+
+⸻
+
+## Multi-Threading-Konzept
+	### Server:
+	•	Ein Thread pro Client
+	•	Parallele Verarbeitung mehrerer Benutzer
+	## Client:
+	•	Hauptthread für Benutzereingaben
+	•	Neben-Thread für den Empfang von Nachrichten
+
+### Architekturübersicht
+
+```text
+                         ┌─────────────────────────────────┐
+                         │            server.py            │
+                         │─────────────────────────────────│
+                         │ TCP Socket                      │
+                         │ bind(host, 0)  -> OS wählt Port │
+                         │ getsockname() -> echter Port    │
+                         │ schreibt server_addr.json       │
+                         │ accept() (wartet auf Clients)   │
+                         │ Clients-Liste + Rooms           │
+                         └───────────────┬─────────────────┘
+                                         │
+                  ┌──────────────────────┼──────────────────────┐
+                  │                      │                      │
+          ┌───────▼────────┐     ┌───────▼────────┐     ┌───────▼────────┐
+          │ client.py (A)  │     │ client.py (B)  │     │ client.py (C)  │
+          │ Thread: send   │     │ Thread: send   │     │ Thread: send   │
+          │ Thread: receive│     │ Thread: receive│     │ Thread: receive│
+          └───────┬────────┘     └───────┬────────┘     └───────┬────────┘
+                  │                      │                      │
+          ┌───────▼─────────────────────────────────────────────▼───────┐
+          │     Nachrichtenfluss: Client -> Server -> Broadcast im Raum │
+          └─────────────────────────────────────────────────────────────┘
