@@ -1,5 +1,8 @@
 import socket
 from threading import Thread
+import argparse
+import json
+
 
 class Server:
     # Liste aller verbundenen Clients.
@@ -12,12 +15,13 @@ class Server:
     # Standardraum: Jeder Client startet automatisch in der Lobby.
     default_room = "lobby"
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, addrfile="server_addr.json"):
 
         #Speichert den Servername, Host und Port, damit man drauf zugreifen kann
         self.host = host
         self.port = port
-        self.server_name = "ChatServer" # <-- Neuer Servername
+        self.server_name = "ChatServer"  # <-- Neuer Servername
+        self.addrfile = addrfile         # <-- Datei, in die Host/Port geschrieben werden
 
         # TCP/IPv4 Socket erstellen
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -34,8 +38,16 @@ class Server:
         # Server beginnt zu lauschen (max. 5 wartende Verbindungen im Backlog)
         self.server_socket.listen(5)
 
+        # --- NEU ---
+        # Schreibt Host und dynamischen Port in eine Datei,
+        # damit der Client diese automatisch lesen kann
+        with open(self.addrfile, "w", encoding="utf-8") as f:
+            json.dump({"host": self.host, "port": self.port}, f)
+        # ------------
+
         # Statusausgabe
-        print(f"{self.server_name} started on {self.host}:{self.port}" )
+        print(f"{self.server_name} started on {self.host}:{self.port}")
+        print(f"Address written to {self.addrfile}")
 
     def start(self):
         # Hauptloop: akzeptiert laufend neue Verbindungen
@@ -56,7 +68,11 @@ class Server:
             # Dem Client erklären, wo er ist und wie er den Chat benutzt
             self.send_to(client, f"You joined '{self.default_room}' \n")
             self.send_to(client, "Available rooms: lobby, work, support, team\n")
-            self.send_to(client, "Commands: /ls (list rooms), /cd <room> (change room), /users (list users in room), /server (show server info), /help (show all commands), bye (exit)\n")
+            self.send_to(
+                client,
+                "Commands: /ls (list rooms), /cd <room> (change room), /users (list users in room), "
+                "/server (show server info), /help (show all commands), bye (exit)\n"
+            )
 
             # Den Raum informieren, dass der Client beigetreten ist
             self.broadcast_room(f"[{client['room']}] {name} joined.\n", client)
@@ -103,17 +119,17 @@ class Server:
 
                 # Nur erlaubte Räume akzeptieren (keine neuen Räume erstellen)
                 if requested not in self.rooms:
-                    self.send_to(client, "Room does not exist. Use /rooms to see allowed rooms.\n")
+                    self.send_to(client, "Room does not exist. Use /ls to see allowed rooms.\n")
                     continue
 
                 # Raumwechsel durchführen
                 self.change_room(client, requested)
                 continue
-            
+
             # Command: Kann user im Chatraum anzeigen
             if msg == "/users":
                 room = client["room"]
-                users = [c["name"]for c in self.clients if c["room"] == room]
+                users = [c["name"] for c in self.clients if c["room"] == room]
                 self.send_to(
                     client,
                     f"users in '{room}' ({len(users)}): " + ", ".join(users) + "\n"
@@ -218,7 +234,17 @@ class Server:
         except OSError:
             pass
 
+
 # Startpunkt des Programms: nur wenn diese Datei direkt ausgeführt wird
 if __name__ == "__main__":
-    # Server auf starten
-    Server("127.0.0.1", 0).start()
+    # --- NEU ---
+    # argparse erlaubt Startparameter (Port 0 = dynamisch)
+    parser = argparse.ArgumentParser(description="Chat server")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=0)
+    parser.add_argument("--addrfile", default="server_addr.json")
+    args = parser.parse_args()
+    # ------------
+
+    # Server starten
+    Server(args.host, args.port, args.addrfile).start()
