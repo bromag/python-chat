@@ -42,7 +42,7 @@ Die Anwendung besteht aus zwei Skripten:
 python3 server.py
 
 ## Erwartete Ausgabe 
-Server started on 127.0.0.1:6321
+ChatServer started on 127.0.0.1:6321
 ```
 ---
 
@@ -80,6 +80,8 @@ Innerhalb des Chats stehen folgende Befehle zur Verfügung:
 | `/cd support` | Wechsel in den Raum `support`              |
 | `/cd team`    | Wechsel in den Raum `team`                 |
 | `/users`      | Zeigt alle verbundene User                 |
+| `/server`     | Zeigt Serverinformationen und Benutzer an  |
+| `/help`       | Listet alle verfügbaren Befehle auf        |
 | `bye`         | Beendet die Verbindung zum Server          |
 ```
 
