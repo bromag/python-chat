@@ -3,48 +3,51 @@ from threading import Thread
 import os
 
 class Client:
-    # Create TCP socket over IPV4 and connect to server.
+    # Erstellt einen TCP-Socket über IPv4 und verbindet sich mit dem Server
     def __init__(self, HOST, PORT):
         self.socket = socket.socket()
         self.socket.connect((HOST, PORT))
         self.name = input("Enter your name: ")
 
         self.talk_to_server()
-    # message sending and receiving
+
+    # Startet die Kommunikation mit dem Server
     def talk_to_server(self):
-        # send name first
+        # Zuerst den Namen an den Server senden
         self.socket.send(self.name.encode('utf-8'))
 
-        # start receiving thread
+        # Thread zum Empfangen von Nachrichten starten
         Thread(target=self.receive_messages, daemon=True).start()
 
-        # handle sending
+        # Nachrichten senden
         self.send_messages()
 
-    # message sending loop
+    # Schleife zum Senden von Nachrichten
     def send_messages(self):
         while True:
             client_input = input("")
 
-            # user wants to exit
+            # Benutzer möchte die Verbindung beenden
             if client_input.strip().lower() == "bye":
                 self.socket.send(f"{self.name}:bye".encode("utf-8"))
                 os._exit(0)
 
-            # send chat message
+            # Chat-Nachricht an den Server senden
             self.socket.send(client_input.encode("utf-8"))
-    
-    # message receiving loop
+
+    # Schleife zum Empfangen von Nachrichten
     def receive_messages(self):
         while True:
-            # receive message from server
+            # Nachricht vom Server empfangen
             server_message = self.socket.recv(1024).decode('utf-8')
+
+            # Falls keine Nachricht mehr kommt, Verbindung beenden
             if not server_message.strip():
                 print("Connection closed by server.")
                 os._exit(0)
 
             print(server_message)
 
-# client entry point
+# Einstiegspunkt des Clients
 if __name__ == "__main__":
     Client('127.0.0.1', 6321)
