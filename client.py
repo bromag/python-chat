@@ -1,6 +1,9 @@
 import socket
 from threading import Thread
 import os
+import argparse          # <-- NEU: für Startparameter
+import json              # <-- NEU: um Host/Port aus Datei zu lesen
+
 
 class Client:
     # Erstellt einen TCP-Socket über IPv4 und verbindet sich mit dem Server
@@ -48,8 +51,27 @@ class Client:
 
             print(server_message)
 
+
 # Einstiegspunkt des Clients
 if __name__ == "__main__":
-    host = ('127.0.0.1')
-    port = int(input("Enter server port: ").strip())
+    # --- NEU ---
+    # argparse erlaubt optionale Übergabe von Host/Port
+    parser = argparse.ArgumentParser(description="Chat client")
+    parser.add_argument("--host", default=None, help="Server host (optional)")
+    parser.add_argument("--port", type=int, default=None, help="Server port (optional)")
+    parser.add_argument("--addrfile", default="server_addr.json", help="Address file from server")
+    args = parser.parse_args()
+
+    host = args.host
+    port = args.port
+
+    # Wenn Host oder Port nicht angegeben sind,
+    # werden sie automatisch aus der Datei gelesen
+    if host is None or port is None:
+        with open(args.addrfile, "r", encoding="utf-8") as f:
+            addr = json.load(f)
+            host = host or addr["host"]
+            port = port or addr["port"]
+    # ------------
+
     Client(host, port)
