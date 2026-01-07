@@ -54,7 +54,6 @@ class Client:
 
 # Einstiegspunkt des Clients
 if __name__ == "__main__":
-    # --- NEU ---
     # argparse erlaubt optionale Übergabe von Host/Port
     parser = argparse.ArgumentParser(description="Chat client")
     parser.add_argument("--host", default=None, help="Server host (optional)")
