@@ -3,8 +3,8 @@
 Dieses Projekt implementiert einen **multi-threaded Chat-Service** in Python auf Basis von TCP-Sockets.  
 Mehrere Clients können sich gleichzeitig mit dem Server verbinden und in **vordefinierten Chat-Räumen** kommunizieren.
 
-Der Server verwendet einen **dynamischen TCP-Port**, welcher beim Start automatisch vom Betriebssystem vergeben wird.  
-Die Verbindungsinformationen werden in einer Datei gespeichert und vom Client automatisch gelesen.
+Der Server lauscht auf einem **frei wählbaren TCP-Port**, der beim Start explizit angegeben wird.  
+Clients verbinden sich über die **IP-Adresse des Servers** und den angegebenen Port.
 
 Die Anwendung besteht aus zwei Skripten:
 - `server.py` – Chat-Server
@@ -16,8 +16,7 @@ Die Anwendung besteht aus zwei Skripten:
 
 - Multi-threaded Server (ein Thread pro Client)
 - Gleichzeitige Verbindung mehrerer Clients
-- Dynamischer TCP-Port
-- Automatische Weitergabe von Host/Port über Datei
+- Fester TCP-Port (per Startparameter)
 - Feste Chat-Räume:
   - `lobby` (Standardraum)
   - `work`
@@ -37,23 +36,22 @@ Die Anwendung besteht aus zwei Skripten:
 
 ---
 
-## Schritt 1: Server starten (dynamischer Port)
+## Schritt 1: Server starten
 
 1. Öffne ein Terminal  
 2. Wechsle in das Projektverzeichnis  
 3. Starte den Server mit folgendem Befehl:
 
 ```bash
-python3 server.py
+python3 server.py --port 1234
 
 ## Erwartete Ausgabe 
-ChatServer started on 127.0.0.1:<PORT>
-Address written to server_addr.json
+ChatServer started on 0.0.0.0:1234
 ```
 
 ### Hinweis:
-Der Port wird automatisch vergeben.
-Host und Port werden in der Datei server_addr.json gespeichert.
+	•	Der Server bindet sich automatisch an alle lokalen Netzwerk-Interfaces (0.0.0.0)
+	•	Der Server ist erreichbar über 127.0.0.1 oder über die LAN-IP des Rechners
 ---
 
 ## Client Starten
@@ -63,13 +61,9 @@ Host und Port werden in der Datei server_addr.json gespeichert.
 3. Starte den Client mit:
 
 ```bash
-python3 client.py
+python3 client.py --ip 127.0.0.1 --port 1234
 ```
-4. Falls kein Host oder Port als Parameter übergeben wurden, liest der Client diese automatisch aus:
-```bash
-server_addr.json
-```
-5. Gib anschliessend einen Benutzernamen ein:
+4. Gib anschliessend einen Benutzernamen ein:
 ```bash
 Enter your name:
 ```
@@ -99,42 +93,45 @@ Innerhalb des Chats stehen folgende Befehle zur Verfügung:
 ```
 
 ## Standardverhalten
-- Jeder Client startet automatisch im Raum lobby
-- Nachrichten werden nur an Clients im gleichen Raum gesendet
-- Eigene Nachrichten werden ebenfalls vom Server zurückgesendet
+	•	Jeder Client startet automatisch im Raum lobby
+	•	Nachrichten werden nur an Clients im gleichen Raum gesendet
+	•	Eigene Nachrichten werden ebenfalls vom Server zurückgesendet
+
+⸻
 
 ## Beenden der Anwendung
-- Client beenden:
+	•	Client beenden:
 Im Chat bye eingeben
-- Server beenden:
+	•	Server beenden:
 Im Server-Terminal CTRL + C drücken
 
-# Technische Erklärung des Codes
+⸻
+
+### Technische Erklärung des Codes
 
 ## server.py – Chat-Server
 
-### Der Server stellt die zentrale Komponente des Systems dar und übernimmt folgende Aufgaben:
-	•	Erstellt einen TCP-Socket und bindet sich an einen dynamischen Port (port = 0)
-	•	Liest den tatsächlich vergebenen Port mit getsockname()
-	•	Speichert Host und Port in einer JSON-Datei (server_addr.json)
+## Der Server stellt die zentrale Komponente des Systems dar und übernimmt folgende Aufgaben:
+	•	Erstellt einen TCP-Socket (IPv4)
+	•	Bindet sich automatisch an alle lokalen Interfaces (0.0.0.0)
+	•	Lauscht auf dem übergebenen TCP-Port (--port)
 	•	Wartet auf eingehende Client-Verbindungen (accept)
 	•	Erstellt für jeden verbundenen Client einen eigenen Thread
 	•	Verwaltet alle Clients in einer gemeinsamen Liste
-	•	Ordnet jedem Client einen Chat-Raum zu
+	•	Ordnet jedem Client einen festen Chat-Raum zu
 	•	Verarbeitet Chat-Befehle (/ls, /cd, /users, /server, /help)
 	•	Verteilt Nachrichten ausschliesslich an Clients im gleichen Raum
 	•	Entfernt Clients sauber bei Verbindungsabbruch oder bei bye
 
-Der Server enthält die gesamte Logik für Räume, Benutzer und Nachrichtenverteilung.
+Der Server enthält die gesamte Anwendungslogik für Räume, Benutzer und Nachrichtenverteilung.
 
 ⸻
 
 ## client.py – Chat-Client
 
-### Der Client stellt die Benutzeroberfläche im Terminal bereit und übernimmt folgende Aufgaben:
-	•	Liest optionale Startparameter (--host, --port, --addrfile) mittels argparse
-	•	Falls Host oder Port fehlen, werden diese automatisch aus der JSON-Datei gelesen
-	•	Baut eine TCP-Verbindung zum Server auf
+Der Client stellt die Benutzeroberfläche im Terminal bereit und übernimmt folgende Aufgaben:
+	•	Liest Startparameter (--ip, --port) mittels argparse
+	•	Baut eine TCP-Verbindung zum angegebenen Server auf
 	•	Sendet beim Verbindungsaufbau den Benutzernamen
 	•	Startet einen separaten Thread zum Empfangen von Nachrichten
 	•	Liest Benutzereingaben aus dem Terminal
@@ -142,17 +139,21 @@ Der Server enthält die gesamte Logik für Räume, Benutzer und Nachrichtenverte
 	•	Gibt empfangene Nachrichten direkt im Terminal aus
 	•	Beendet die Verbindung sauber bei Eingabe von bye
 
-Der Client enthält keine Anwendungslogik für Räume oder Benutzer – diese liegt vollständig beim Server.
+Der Client enthält keine Anwendungslogik für Räume oder Benutzer –
+diese liegt vollständig beim Server.
 
 ⸻
 
-## Multi-Threading-Konzept
-	## Server:
+### Multi-Threading-Konzept
+
+Server
 	•	Ein Thread pro Client
 	•	Parallele Verarbeitung mehrerer Benutzer
-	## Client:
+
+Client
 	•	Hauptthread für Benutzereingaben
 	•	Neben-Thread für den Empfang von Nachrichten
+
 
 ### Architekturübersicht
 
@@ -161,10 +162,8 @@ Der Client enthält keine Anwendungslogik für Räume oder Benutzer – diese li
                          │            server.py            │
                          │─────────────────────────────────│
                          │ TCP Socket                      │
-                         │ bind(host, 0)  -> OS wählt Port │
-                         │ getsockname() -> echter Port    │
-                         │ schreibt server_addr.json       │
-                         │ accept() (wartet auf Clients)   │
+                         │ bind(0.0.0.0, PORT)             │
+                         │ listen() + accept()             │
                          │ Clients-Liste + Rooms           │
                          └───────────────┬─────────────────┘
                                          │
@@ -177,5 +176,5 @@ Der Client enthält keine Anwendungslogik für Räume oder Benutzer – diese li
           └───────┬────────┘     └───────┬────────┘     └───────┬────────┘
                   │                      │                      │
           ┌───────▼─────────────────────────────────────────────▼───────┐
-          │     Nachrichtenfluss: Client -> Server -> Broadcast im Raum │
+          │   Nachrichtenfluss: Client → Server → Broadcast im Raum     │
           └─────────────────────────────────────────────────────────────┘
