@@ -147,7 +147,7 @@ Der Client enthält keine Anwendungslogik für Räume oder Benutzer – diese li
 ⸻
 
 ## Multi-Threading-Konzept
-	### Server:
+	## Server:
 	•	Ein Thread pro Client
 	•	Parallele Verarbeitung mehrerer Benutzer
 	## Client:
