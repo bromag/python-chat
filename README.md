@@ -32,17 +32,17 @@ Die Anwendung besteht aus zwei Skripten:
 
 ---
 
-## Schritt 1: Server starten
+## Schritt 1: Server starten (dynamischer Port)
 
-1. Öffne ein Terminal
-2. Wechsle in das Projektverzeichnis
+1. Öffne ein Terminal  
+2. Wechsle in das Projektverzeichnis  
 3. Starte den Server mit folgendem Befehl:
 
 ```bash
 python3 server.py
 
 ## Erwartete Ausgabe 
-ChatServer started on 127.0.0.1:6321
+ChatServer started on 127.0.0.1:<PORT>
 ```
 ---
 
@@ -55,8 +55,11 @@ ChatServer started on 127.0.0.1:6321
 ```bash
 python3 client.py
 ```
-4. Gib einen Benutzernamen ein:
-
+4. Gib den vom Server ausgegebenen Port ein:
+```bash
+Enter server port:
+```
+5. Gib anschliessend einen Benutzernamen ein:
 ```bash
 Enter your name:
 ```
