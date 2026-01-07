@@ -1,7 +1,7 @@
 import socket
 from threading import Thread
 import argparse
-import json
+
 
 
 class Server:
@@ -38,16 +38,8 @@ class Server:
         # Server beginnt zu lauschen (max. 5 wartende Verbindungen im Backlog)
         self.server_socket.listen(5)
 
-        # --- NEU ---
-        # Schreibt Host und dynamischen Port in eine Datei,
-        # damit der Client diese automatisch lesen kann
-        with open(self.addrfile, "w", encoding="utf-8") as f:
-            json.dump({"host": self.host, "port": self.port}, f)
-        # ------------
-
         # Statusausgabe
         print(f"{self.server_name} started on {self.host}:{self.port}")
-        print(f"Address written to {self.addrfile}")
 
     def start(self):
         # Hauptloop: akzeptiert laufend neue Verbindungen
@@ -237,13 +229,9 @@ class Server:
 
 # Startpunkt des Programms: nur wenn diese Datei direkt ausgeführt wird
 if __name__ == "__main__":
-    # argparse erlaubt Startparameter (Port 0 = dynamisch)
     parser = argparse.ArgumentParser(description="Chat server")
-    parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--port", type=int, default=0)
-    parser.add_argument("--addrfile", default="server_addr.json")
+    parser.add_argument("--host", default="0.0.0.0", help="Bind address (default: 0.0.0.0)")
+    parser.add_argument("--port", type=int, required=True, help="TCP port to listen on")
     args = parser.parse_args()
-    # ------------
 
-    # Server starten
-    Server(args.host, args.port, args.addrfile).start()
+    Server(args.host, args.port).start()
