@@ -237,7 +237,6 @@ class Server:
 
 # Startpunkt des Programms: nur wenn diese Datei direkt ausgeführt wird
 if __name__ == "__main__":
-    # --- NEU ---
     # argparse erlaubt Startparameter (Port 0 = dynamisch)
     parser = argparse.ArgumentParser(description="Chat server")
     parser.add_argument("--host", default="127.0.0.1")

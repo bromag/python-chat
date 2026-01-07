@@ -1,8 +1,8 @@
 import socket
 from threading import Thread
 import os
-import argparse          # <-- NEU: für Startparameter
-import json              # <-- NEU: um Host/Port aus Datei zu lesen
+import argparse          # für Startparameter
+import json              # um Host/Port aus Datei zu lesen
 
 
 class Client:
