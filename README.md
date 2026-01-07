@@ -142,7 +142,7 @@ Der Server enthält die gesamte Logik für Räume, Benutzer und Nachrichtenverte
 	•	Gibt empfangene Nachrichten direkt im Terminal aus
 	•	Beendet die Verbindung sauber bei Eingabe von bye
 
-Der Client enthält keine Geschäftslogik für Räume oder Benutzer – diese liegt vollständig beim Server.
+Der Client enthält keine Anwendungslogik für Räume oder Benutzer – diese liegt vollständig beim Server.
 
 ⸻
 
