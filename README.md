@@ -138,8 +138,7 @@ Der Server enthält die gesamte Anwendungslogik für Räume, Benutzer und Nachri
 	• Gibt empfangene Nachrichten direkt im Terminal aus
 	• Beendet die Verbindung sauber bei Eingabe von bye
 
-Der Client enthält keine Anwendungslogik für Räume oder Benutzer –
-diese liegt vollständig beim Server.
+Der Client enthält keine Anwendungslogik für Räume oder Benutzer diese liegt vollständig beim Server.
 
 ---
 
