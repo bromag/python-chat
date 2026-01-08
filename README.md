@@ -178,3 +178,39 @@ diese liegt vollständig beim Server.
           ┌───────▼─────────────────────────────────────────────▼───────┐
           │   Nachrichtenfluss: Client → Server → Broadcast im Raum     │
           └─────────────────────────────────────────────────────────────┘
+```
+
+### Datenfluss bei einer Nachricht (Broadcast nur im gleichen Raum)
+
+Beispiel:
+	•	Client A ist in lobby
+	•	Client C ist in lobby
+	•	Client B ist in work
+
+```text
+Client A (lobby)            Server                        Client C (lobby)     Client B (work)
+     |                       |                                |                   |
+     | "Hallo" send()        |                                |                   |
+     |---------------------->|  handle_client(A): recv()      |                   |
+     |                       |  msg = "Hallo"                 |                   |
+     |                       |  -> broadcast_room("A: Hallo") |                   |
+     |                       |------------------------------->|  recv-thread: print
+     |                       |                                |     A: Hallo      |
+     |                       |   (nicht an work senden)       |                   |
+     |                       |------------------------------X |                   |
+     |                       |                                |                   |
+```
+
+### Datenfluss bei einem Befehl (Antwort nur an den Sender)
+Beispiel: Client A tippt /users
+```text
+Client A                    Server
+  |                         |
+  | "/users" send()         |
+  |------------------------>|
+  |                         | handle_client(A): erkennt Command
+  |                         | users = [..] im aktuellen Raum
+  |                         | send_to(A, "users in 'lobby': ...")
+  |<------------------------|
+  | print("users in ...")   |
+```
