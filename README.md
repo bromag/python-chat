@@ -129,7 +129,7 @@ Der Server enthält die gesamte Anwendungslogik für Räume, Benutzer und Nachri
 
 ## client.py – Chat-Client
 
-Der Client stellt die Benutzeroberfläche im Terminal bereit und übernimmt folgende Aufgaben:
+	Der Client stellt die Benutzeroberfläche im Terminal bereit und übernimmt folgende Aufgaben:
 	•	Liest Startparameter (--ip, --port) mittels argparse
 	•	Baut eine TCP-Verbindung zum angegebenen Server auf
 	•	Sendet beim Verbindungsaufbau den Benutzernamen
@@ -146,11 +146,11 @@ diese liegt vollständig beim Server.
 
 ### Multi-Threading-Konzept
 
-Server
+	Server
 	•	Ein Thread pro Client
 	•	Parallele Verarbeitung mehrerer Benutzer
 
-Client
+	Client
 	•	Hauptthread für Benutzereingaben
 	•	Neben-Thread für den Empfang von Nachrichten
 
