@@ -105,7 +105,7 @@ Im Chat bye eingeben
 	•	Server beenden:
 Im Server-Terminal CTRL + C drücken
 
-⸻
+---
 
 ### Technische Erklärung des Codes
 
@@ -125,7 +125,7 @@ Im Server-Terminal CTRL + C drücken
 
 Der Server enthält die gesamte Anwendungslogik für Räume, Benutzer und Nachrichtenverteilung.
 
-⸻
+---
 
 ## client.py – Chat-Client
 
@@ -142,7 +142,7 @@ Der Server enthält die gesamte Anwendungslogik für Räume, Benutzer und Nachri
 Der Client enthält keine Anwendungslogik für Räume oder Benutzer –
 diese liegt vollständig beim Server.
 
-⸻
+---
 
 ### Multi-Threading-Konzept
 
