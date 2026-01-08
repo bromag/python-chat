@@ -56,8 +56,8 @@ ChatServer started on 0.0.0.0:1234
 
 ## Client Starten
 
-1. Öffne ein neuer Terminal
-2. wechsle erneut in das Projetverzeichnis
+1. Öffne ein neues Terminal
+2. Wechsle erneut in das Projektverzeichnis
 3. Starte den Client mit:
 
 ```bash
@@ -93,7 +93,7 @@ Innerhalb des Chats stehen folgende Befehle zur Verfügung:
 ```
 
 ## Standardverhalten
-- Jeder Client startet automatisch im Raum lobby
+- Jeder Client startet automatisch im Raum "lobby"
 - Nachrichten werden nur an Clients im gleichen Raum gesendet
 - Eigene Nachrichten werden ebenfalls vom Server zurückgesendet
 
