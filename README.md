@@ -110,7 +110,7 @@ Innerhalb des Chats stehen folgende Befehle zur Verfügung:
 
 ## server.py – Chat-Server
 
-## Der Server stellt die zentrale Komponente des Systems dar und übernimmt folgende Aufgaben:
+	Der Server stellt die zentrale Komponente des Systems dar und übernimmt folgende Aufgaben:
 	• Erstellt einen TCP-Socket (IPv4)
 	• Bindet sich automatisch an alle lokalen Interfaces (0.0.0.0)
 	• Lauscht auf dem übergebenen TCP-Port (--port)
