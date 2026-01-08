@@ -50,8 +50,8 @@ ChatServer started on 0.0.0.0:1234
 ```
 
 ### Hinweis:
-	•	Der Server bindet sich automatisch an alle lokalen Netzwerk-Interfaces (0.0.0.0)
-	•	Der Server ist erreichbar über 127.0.0.1 oder über die LAN-IP des Rechners
+	• Der Server bindet sich automatisch an alle lokalen Netzwerk-Interfaces (0.0.0.0)
+	• Der Server ist erreichbar über 127.0.0.1 oder über die LAN-IP des Rechners
 ---
 
 ## Client Starten
@@ -93,17 +93,16 @@ Innerhalb des Chats stehen folgende Befehle zur Verfügung:
 ```
 
 ## Standardverhalten
-	•	Jeder Client startet automatisch im Raum lobby
-	•	Nachrichten werden nur an Clients im gleichen Raum gesendet
-	•	Eigene Nachrichten werden ebenfalls vom Server zurückgesendet
-
-⸻
+- Jeder Client startet automatisch im Raum lobby
+- Nachrichten werden nur an Clients im gleichen Raum gesendet
+- Eigene Nachrichten werden ebenfalls vom Server zurückgesendet
 
 ## Beenden der Anwendung
-	•	Client beenden:
-Im Chat bye eingeben
-	•	Server beenden:
-Im Server-Terminal CTRL + C drücken
+	Client beenden:
+	• Im Chat bye eingeben
+
+	Server beenden:
+	• Im Server-Terminal CTRL + C drücken
 
 ---
 
@@ -112,16 +111,16 @@ Im Server-Terminal CTRL + C drücken
 ## server.py – Chat-Server
 
 ## Der Server stellt die zentrale Komponente des Systems dar und übernimmt folgende Aufgaben:
-	•	Erstellt einen TCP-Socket (IPv4)
-	•	Bindet sich automatisch an alle lokalen Interfaces (0.0.0.0)
-	•	Lauscht auf dem übergebenen TCP-Port (--port)
-	•	Wartet auf eingehende Client-Verbindungen (accept)
-	•	Erstellt für jeden verbundenen Client einen eigenen Thread
-	•	Verwaltet alle Clients in einer gemeinsamen Liste
-	•	Ordnet jedem Client einen festen Chat-Raum zu
-	•	Verarbeitet Chat-Befehle (/ls, /cd, /users, /server, /help)
-	•	Verteilt Nachrichten ausschliesslich an Clients im gleichen Raum
-	•	Entfernt Clients sauber bei Verbindungsabbruch oder bei bye
+	• Erstellt einen TCP-Socket (IPv4)
+	• Bindet sich automatisch an alle lokalen Interfaces (0.0.0.0)
+	• Lauscht auf dem übergebenen TCP-Port (--port)
+	• Wartet auf eingehende Client-Verbindungen (accept)
+	• Erstellt für jeden verbundenen Client einen eigenen Thread
+	• Verwaltet alle Clients in einer gemeinsamen Liste
+	• Ordnet jedem Client einen festen Chat-Raum zu
+	• Verarbeitet Chat-Befehle (/ls, /cd, /users, /server, /help)
+	• Verteilt Nachrichten ausschliesslich an Clients im gleichen Raum
+	• Entfernt Clients sauber bei Verbindungsabbruch oder bei bye
 
 Der Server enthält die gesamte Anwendungslogik für Räume, Benutzer und Nachrichtenverteilung.
 
@@ -130,14 +129,14 @@ Der Server enthält die gesamte Anwendungslogik für Räume, Benutzer und Nachri
 ## client.py – Chat-Client
 
 	Der Client stellt die Benutzeroberfläche im Terminal bereit und übernimmt folgende Aufgaben:
-	•	Liest Startparameter (--ip, --port) mittels argparse
-	•	Baut eine TCP-Verbindung zum angegebenen Server auf
-	•	Sendet beim Verbindungsaufbau den Benutzernamen
-	•	Startet einen separaten Thread zum Empfangen von Nachrichten
-	•	Liest Benutzereingaben aus dem Terminal
-	•	Sendet Nachrichten und Befehle an den Server
-	•	Gibt empfangene Nachrichten direkt im Terminal aus
-	•	Beendet die Verbindung sauber bei Eingabe von bye
+	• Liest Startparameter (--ip, --port) mittels argparse
+	• Baut eine TCP-Verbindung zum angegebenen Server auf
+	• Sendet beim Verbindungsaufbau den Benutzernamen
+	• Startet einen separaten Thread zum Empfangen von Nachrichten
+	• Liest Benutzereingaben aus dem Terminal
+	• Sendet Nachrichten und Befehle an den Server
+	• Gibt empfangene Nachrichten direkt im Terminal aus
+	• Beendet die Verbindung sauber bei Eingabe von bye
 
 Der Client enthält keine Anwendungslogik für Räume oder Benutzer –
 diese liegt vollständig beim Server.
@@ -147,12 +146,12 @@ diese liegt vollständig beim Server.
 ### Multi-Threading-Konzept
 
 	Server
-	•	Ein Thread pro Client
-	•	Parallele Verarbeitung mehrerer Benutzer
+	• Ein Thread pro Client
+	• Parallele Verarbeitung mehrerer Benutzer
 
 	Client
-	•	Hauptthread für Benutzereingaben
-	•	Neben-Thread für den Empfang von Nachrichten
+	• Hauptthread für Benutzereingaben
+	• Neben-Thread für den Empfang von Nachrichten
 
 
 ### Architekturübersicht
@@ -183,9 +182,9 @@ diese liegt vollständig beim Server.
 ### Datenfluss bei einer Nachricht (Broadcast nur im gleichen Raum)
 
 Beispiel:
-	•	Client A ist in lobby
-	•	Client C ist in lobby
-	•	Client B ist in work
+	• Client A ist in lobby
+	• Client C ist in lobby
+	• Client B ist in work
 
 ```text
 Client A (lobby)            Server                        Client C (lobby)     Client B (work)
